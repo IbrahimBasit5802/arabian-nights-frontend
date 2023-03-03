@@ -64,20 +64,23 @@ class _StaffUpdateScreenState extends ConsumerState<StaffUpdateScreen> {
     }
 
     try {
-      await updateStaffDetails(
-        uid: widget.doc["uid"],
-        role: _dropdownUserRole,
-        email: _emailTextController.text,
-        name: _nameTextController.text,
-        phoneNumber: _phoneNumberController.text,
-      );
+      var dio = Dio();
+
+      var response = await dio.post(Constants.baseUrl + Constants.updateUserUrl, data: {
+          "_id": widget.doc["uid"],
+          "name": _nameTextController.text,
+          "email": _emailTextController.text,
+          "phone": _phoneNumberController.text,
+          "userType": _dropdownUserRole,
+      });
+
       showAlertDialog(
         context: context,
         title: "Done ✅",
         description: "User's role updated",
       );
 
-      var dio = Dio();
+
       var res = await dio.get(Constants.baseUrl + Constants.getAllUsersUrl);
       List<dynamic> staff = [];
       for (int i = 0; i < res.data["users"].length; i++) {

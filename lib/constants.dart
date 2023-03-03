@@ -28,5 +28,6 @@ class Constants {
   static const getAllUsersUrl = '/getallusers';
   static const getUserUrl = '/getuser';
   static const deleteUserUrl = '/deleteuser';
+  static const updateUserUrl = '/updateuser';
 
 }
