@@ -1,5 +1,5 @@
 enum UserRoles {
-  manager,
+  Manager,
   waiterOrWaitress,
   recieptionist,
   kitchen,

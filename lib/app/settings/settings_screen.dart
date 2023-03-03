@@ -27,7 +27,7 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     UserModel userModel = ref.watch(userProvider);
-
+    print("userModel settings: " + userModel.role);
     return Scaffold(
       body: Scrollbar(
         thumbVisibility: true,
@@ -49,7 +49,7 @@ class SettingsScreen extends ConsumerWidget {
               iconBackground: const Color(0xFF7438EB),
               icon: Icons.person,
             ),
-            if (userModel.role == UserRoles.manager.name) ...[
+            if (userModel.role == UserRoles.Manager.name) ...[
               SettingListTile(
                 onTap: () {
                   Navigator.push(
@@ -129,7 +129,7 @@ class SettingsScreen extends ConsumerWidget {
                 icon: Icons.insights,
               ),
             ],
-            if (userModel.role == UserRoles.manager.name ||
+            if (userModel.role == UserRoles.Manager.name ||
                 userModel.role == UserRoles.recieptionist.name) ...[
               SettingListTile(
                 onTap: () {

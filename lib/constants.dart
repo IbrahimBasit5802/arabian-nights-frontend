@@ -25,5 +25,6 @@ class Constants {
   static const addNewItemUrl = "/addmenuitem";
   static const deleteItemUrl = "/deletemenuitem";
   static const updateItemUrl = "/updatemenuitem";
+  static const getAllUsersUrl = '/getallusers';
 
 }

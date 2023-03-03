@@ -43,114 +43,22 @@ class _EmailLoginScreenState extends ConsumerState<EmailLoginScreen> {
       });
       return;
     }
-    // var response;
-    // try {
-    //   response = await Dio().post(
-    //     Constants.baseUrl + Constants.authenticateUrl,
-    //     data: {
-    //       "email": email,
-    //       "password": password,
-    //     },
-    //   );
-    // } catch(e) {
-    //   print(e);
-    // }
-    //
-    // if (response.data['success'] == false) {
-    //   String message = response.data['msg'];
-    //
-    //   showAlertDialog(
-    //     context: context,
-    //     title: "oops!",
-    //     description: message,
-    //   );
-    //   setState(() {
-    //     _isBtnSignInClicked = false;
-    //   });
-    // }
-    //
-    // else {
-    //   var token = response.data['token'];
-    //   var res;
-    //   var dio = Dio();
-    //   try {
-    //     res = await dio.get(Constants.baseUrl + Constants.userInfoUrl,
-    //         options:Options(headers: {
-    //           "Authorization": "Bearer $token",
-    //         })
-    //     );
-    //   } catch(e) {
-    //     print(e);
-    //   }
-    //    UserModel userModel = UserModel(
-    //     name: res.data['name'] ?? "",
-    //     email: res.data['email'] ?? "",
-    //     phoneNumber: res.data['phone'] ?? "",
-    //     role: res.data['userType'] ?? "",
-    //   );
-    //
-    //   ref.read(userProvider.notifier).state = userModel;
-    //   if (userModel.role != "" && userModel.role != "user") {
-    //             print("userModel.role: ${userModel.role}");
-    //             if (!mounted) return;
-    //             Navigator.pushAndRemoveUntil(
-    //               context,
-    //               MaterialPageRoute(
-    //                 builder: (context) => const POSHomeScreen(),
-    //               ),
-    //               (route) => false,
-    //             );
-    //           } else {
-    //             if (!mounted) return;
-    //             Navigator.pushAndRemoveUntil(
-    //               context,
-    //               MaterialPageRoute(
-    //                 builder: (context) => const AccountCreatedScreen(),
-    //               ),
-    //               (route) => false,
-    //             );
-    //           }
-    //         }
+    var response;
+    try {
+      response = await Dio().post(
+        Constants.baseUrl + Constants.authenticateUrl,
+        data: {
+          "email": email,
+          "password": password,
+        },
+      );
+    } catch(e) {
+      print(e);
+    }
 
-    signInWithEmail(email: email, password: password).then((user) async {
-      if (user != null) {
-        setState(() {
-          _isBtnSignInClicked = false;
-        });
+    if (response.data['success'] == false) {
+      String message = response.data['msg'];
 
-        Map<String, dynamic>? userData = await getUserInfo();
-        if (userData != null) {
-          UserModel userModel = UserModel(
-            name: userData["name"] ?? "",
-            email: userData["email"] ?? "",
-            phoneNumber: userData["phoneNumber"] ?? "",
-            role: userData["role"] ?? "",
-          );
-          ref.read(userProvider.notifier).state = userModel;
-
-          if (userModel.role != "" && userModel.role != "user") {
-            if (!mounted) return;
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const POSHomeScreen(),
-              ),
-              (route) => false,
-            );
-          } else {
-            if (!mounted) return;
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const AccountCreatedScreen(),
-              ),
-              (route) => false,
-            );
-          }
-        }
-      }
-    }).catchError((error) {
-      String message = error.message;
       showAlertDialog(
         context: context,
         title: "oops!",
@@ -159,7 +67,99 @@ class _EmailLoginScreenState extends ConsumerState<EmailLoginScreen> {
       setState(() {
         _isBtnSignInClicked = false;
       });
-    });
+    }
+
+    else {
+      var token = response.data['token'];
+      var res;
+      var dio = Dio();
+      try {
+        res = await dio.get(Constants.baseUrl + Constants.userInfoUrl,
+            options:Options(headers: {
+              "Authorization": "Bearer $token",
+            })
+        );
+      } catch(e) {
+        print(e);
+      }
+       UserModel userModel = UserModel(
+        name: res.data['name'] ?? "",
+        email: res.data['email'] ?? "",
+        phoneNumber: res.data['phone'] ?? "",
+        role: res.data['userType'] ?? "",
+      );
+
+      ref.read(userProvider.notifier).state = userModel;
+      if (userModel.role != "" && userModel.role != "user") {
+                print("userModel.role: ${userModel.role}");
+                if (!mounted) return;
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const POSHomeScreen(),
+                  ),
+                  (route) => false,
+                );
+              } else {
+                if (!mounted) return;
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AccountCreatedScreen(),
+                  ),
+                  (route) => false,
+                );
+              }
+            }
+
+    // signInWithEmail(email: email, password: password).then((user) async {
+    //   if (user != null) {
+    //     setState(() {
+    //       _isBtnSignInClicked = false;
+    //     });
+    //
+    //     Map<String, dynamic>? userData = await getUserInfo();
+    //     if (userData != null) {
+    //       UserModel userModel = UserModel(
+    //         name: userData["name"] ?? "",
+    //         email: userData["email"] ?? "",
+    //         phoneNumber: userData["phoneNumber"] ?? "",
+    //         role: userData["role"] ?? "",
+    //       );
+    //       ref.read(userProvider.notifier).state = userModel;
+    //
+    //       if (userModel.role != "" && userModel.role != "user") {
+    //         if (!mounted) return;
+    //         Navigator.pushAndRemoveUntil(
+    //           context,
+    //           MaterialPageRoute(
+    //             builder: (context) => const POSHomeScreen(),
+    //           ),
+    //           (route) => false,
+    //         );
+    //       } else {
+    //         if (!mounted) return;
+    //         Navigator.pushAndRemoveUntil(
+    //           context,
+    //           MaterialPageRoute(
+    //             builder: (context) => const AccountCreatedScreen(),
+    //           ),
+    //           (route) => false,
+    //         );
+    //       }
+    //     }
+    //   }
+    // }).catchError((error) {
+    //   String message = error.message;
+    //   showAlertDialog(
+    //     context: context,
+    //     title: "oops!",
+    //     description: message,
+    //   );
+    //   setState(() {
+    //     _isBtnSignInClicked = false;
+    //   });
+    // });
     }
 
 

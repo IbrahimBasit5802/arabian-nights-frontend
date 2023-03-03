@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:arabian_nights_frontend/app/settings/controllers/staff_controller.dart';
@@ -7,8 +8,10 @@ import 'package:arabian_nights_frontend/common/alert_dialog.dart';
 import 'package:arabian_nights_frontend/constants/roles.dart';
 import 'package:arabian_nights_frontend/providers/staff_users_provider.dart';
 
+import '../../../constants.dart';
+
 class StaffUpdateScreen extends ConsumerStatefulWidget {
-  final QueryDocumentSnapshot doc;
+  final Map<String, dynamic> doc;
   const StaffUpdateScreen({Key? key, required this.doc}) : super(key: key);
 
   @override
@@ -26,12 +29,12 @@ class _StaffUpdateScreenState extends ConsumerState<StaffUpdateScreen> {
 
   @override
   void initState() {
-    Map<String, dynamic>? data = widget.doc.data() as Map<String, dynamic>?;
+    Map<String, dynamic>? data = widget.doc as Map<String, dynamic>?;
 
     String name = data!["name"] ?? "";
     String email = data["email"] ?? "";
-    String phoneNumber = data["phoneNumber"] ?? "";
-    String role = data["role"];
+    String phoneNumber = data["phone"] ?? "";
+    String role = data["role"] ?? "";
 
     _nameTextController.text = name;
     _emailTextController.text = email;
@@ -63,7 +66,7 @@ class _StaffUpdateScreenState extends ConsumerState<StaffUpdateScreen> {
 
     try {
       await updateStaffDetails(
-        uid: widget.doc.id,
+        uid: widget.doc["uid"],
         role: _dropdownUserRole,
         email: _emailTextController.text,
         name: _nameTextController.text,
@@ -75,9 +78,20 @@ class _StaffUpdateScreenState extends ConsumerState<StaffUpdateScreen> {
         description: "User's role updated",
       );
 
-      List<QueryDocumentSnapshot>? res = await getStaffUsers();
+      var dio = Dio();
+      var res = await dio.get(Constants.baseUrl + Constants.getAllUsersUrl);
+      List<dynamic> staff = [];
+      for (int i = 0; i < res.data["users"].length; i++) {
+        Map<String, dynamic> curr = {
+          "uid" : res.data["users"][i]["_id"],
+          "name" : res.data["users"][i]["name"],
+          "email" : res.data["users"][i]["email"],
+          "role" : res.data["users"][i]["userType"],
+        };
+        staff.add(curr);
+      }
       if (res != null) {
-        ref.read(staffUsersProvider.notifier).state = res;
+        ref.read(staffUsersProvider.notifier).state = staff;
       }
     } catch (e) {
       showAlertDialog(

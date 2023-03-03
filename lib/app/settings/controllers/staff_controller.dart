@@ -18,7 +18,7 @@ Future<QueryDocumentSnapshot?> searchUserForStaff(
     return null;
   } catch (e) {
     debugPrint(e.toString());
-    throw Exception("error while searching user.");
+    throw Exception("Error while searching user.");
   }
 }
 

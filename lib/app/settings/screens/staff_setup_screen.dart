@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -9,6 +10,8 @@ import 'package:arabian_nights_frontend/app/settings/widgets/custom_app_bar.dart
 import 'package:arabian_nights_frontend/common/alert_dialog.dart';
 import 'package:arabian_nights_frontend/packages/shimmer.dart';
 import 'package:arabian_nights_frontend/providers/staff_users_provider.dart';
+
+import '../../../constants.dart';
 
 class StaffSetupScreen extends ConsumerStatefulWidget {
   const StaffSetupScreen({Key? key}) : super(key: key);
@@ -31,9 +34,20 @@ class _StaffSetupScreenState extends ConsumerState<StaffSetupScreen> {
       _loading = true;
     });
     try {
-      List<QueryDocumentSnapshot>? res = await getStaffUsers();
+      var dio = Dio();
+      var res = await dio.get(Constants.baseUrl + Constants.getAllUsersUrl);
+      List<dynamic> staff = [];
+      for (int i = 0; i < res.data["users"].length; i++) {
+         Map<String, dynamic> curr = {
+           "uid" : res.data["users"][i]["_id"],
+           "name" : res.data["users"][i]["name"],
+           "email" : res.data["users"][i]["email"],
+           "role" : res.data["users"][i]["userType"],
+         };
+         staff.add(curr);
+      }
       if (res != null) {
-        ref.read(staffUsersProvider.notifier).state = res;
+        ref.read(staffUsersProvider.notifier).state = staff;
       }
     } catch (e) {
       debugPrint("$e");
@@ -43,14 +57,14 @@ class _StaffSetupScreenState extends ConsumerState<StaffSetupScreen> {
     });
   }
 
-  void _removeStaffUser(QueryDocumentSnapshot doc) async {
+  void _removeStaffUser(Map<String, dynamic> doc) async {
     try {
       showConfirmAlertDialog(
         context: context,
         title: "Are you sure?",
         description: "selected user will be removed from staff!",
         onConfirm: () async {
-          await resetStaffRole(uid: doc.id);
+          await resetStaffRole(uid: doc["uid"]);
           _getStaffUsers();
         },
       );
@@ -64,7 +78,7 @@ class _StaffSetupScreenState extends ConsumerState<StaffSetupScreen> {
     }
   }
 
-  void _updateStaffUser(QueryDocumentSnapshot doc) {
+  void _updateStaffUser(Map<String, dynamic> doc) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -75,7 +89,7 @@ class _StaffSetupScreenState extends ConsumerState<StaffSetupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List<QueryDocumentSnapshot> staffUsers = ref.watch(staffUsersProvider);
+    List<dynamic> staffUsers = ref.watch(staffUsersProvider);
 
     return Scaffold(
       body: ListView(
@@ -176,12 +190,11 @@ class _StaffSetupScreenState extends ConsumerState<StaffSetupScreen> {
     );
   }
 
-  Widget _staffUserItemWidget({required QueryDocumentSnapshot doc}) {
-    QueryDocumentSnapshot staffUser = doc;
-    Map<String, dynamic>? data = staffUser.data() as Map<String, dynamic>?;
-    String role = data!["role"] ?? "-";
-    String name = data["name"] ?? "-";
-    String contact = data["phoneNumber"] ?? data["email"] ?? "-";
+  Widget _staffUserItemWidget({required Map<String, dynamic> doc}) {
+
+    String role = doc!["role"] ?? "-";
+    String name = doc["name"] ?? "-";
+    String contact = doc["phoneNumber"] ?? doc["email"] ?? "-";
     return Slidable(
       key: UniqueKey(),
       endActionPane: ActionPane(
@@ -189,7 +202,7 @@ class _StaffSetupScreenState extends ConsumerState<StaffSetupScreen> {
         children: [
           SlidableAction(
             onPressed: (ctx) {
-              _updateStaffUser(staffUser);
+              _updateStaffUser(doc);
             },
             label: "edit",
             icon: Icons.edit_outlined,
@@ -198,7 +211,7 @@ class _StaffSetupScreenState extends ConsumerState<StaffSetupScreen> {
           ),
           SlidableAction(
             onPressed: (ctx) {
-              _removeStaffUser(staffUser);
+              _removeStaffUser(doc);
             },
             label: "remove",
             icon: Icons.delete_outline_rounded,
@@ -209,7 +222,7 @@ class _StaffSetupScreenState extends ConsumerState<StaffSetupScreen> {
       ),
       child: InkWell(
         onTap: () {
-          _updateStaffUser(staffUser);
+          _updateStaffUser(doc);
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 8),
