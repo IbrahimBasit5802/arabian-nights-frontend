@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -87,6 +86,7 @@ class _StaffUpdateScreenState extends ConsumerState<StaffUpdateScreen> {
           "name" : res.data["users"][i]["name"],
           "email" : res.data["users"][i]["email"],
           "role" : res.data["users"][i]["userType"],
+          "phone" : res.data["users"][i]["phone"],
         };
         staff.add(curr);
       }

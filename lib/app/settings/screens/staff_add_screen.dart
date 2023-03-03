@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:arabian_nights_frontend/app/settings/controllers/staff_controller.dart';
@@ -6,6 +7,8 @@ import 'package:arabian_nights_frontend/app/settings/widgets/custom_app_bar.dart
 import 'package:arabian_nights_frontend/common/alert_dialog.dart';
 import 'package:arabian_nights_frontend/constants/roles.dart';
 import 'package:arabian_nights_frontend/providers/staff_users_provider.dart';
+
+import '../../../constants.dart';
 
 class StaffAddScreen extends ConsumerStatefulWidget {
   const StaffAddScreen({Key? key}) : super(key: key);
@@ -50,7 +53,7 @@ class _StaffAddScreenState extends ConsumerState<StaffAddScreen> {
       if (searchText.isEmpty) {
         showAlertDialog(
           context: context,
-          title: "oops!",
+          title: "Oops!",
           description: "Please provide search value!",
         );
         setState(() {
@@ -58,11 +61,13 @@ class _StaffAddScreenState extends ConsumerState<StaffAddScreen> {
         });
         return;
       }
+      var dio = Dio();
+      var response = await dio.get(Constants.baseUrl + Constants.getUserUrl, data: {
+        "email": _searchInputController.text,
+      });
 
-      QueryDocumentSnapshot? qSnap = await searchUserForStaff(
-          fieldName: _dropdownSearchBy, searchValue: searchText);
-
-      if (qSnap == null) {
+      print(searchText);
+      if (response == null) {
         showAlertDialog(
           context: context,
           title: "oops!",
@@ -73,17 +78,17 @@ class _StaffAddScreenState extends ConsumerState<StaffAddScreen> {
         });
         return;
       } else {
-        Map<String, dynamic>? snapData = qSnap.data() as Map<String, dynamic>?;
-        if (snapData != null) {
-          String name = snapData["name"] ?? "";
-          String email = snapData["email"] ?? "";
-          String phoneNumber = snapData["phoneNumber"] ?? "";
+
+        if (response.data != null) {
+          String name = response.data["name"] ?? "";
+          String email = response.data["email"] ?? "";
+          String phoneNumber = response.data["phone"] ?? "";
 
           setState(() {
             _name = name;
             _email = email;
             _phoneNumber = phoneNumber;
-            _uid = qSnap.id;
+            _uid = response.data["_id"] ?? "";
           });
         }
       }

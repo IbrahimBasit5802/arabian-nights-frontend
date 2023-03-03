@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -43,6 +42,7 @@ class _StaffSetupScreenState extends ConsumerState<StaffSetupScreen> {
            "name" : res.data["users"][i]["name"],
            "email" : res.data["users"][i]["email"],
            "role" : res.data["users"][i]["userType"],
+            "phone" : res.data["users"][i]["phone"],
          };
          staff.add(curr);
       }
@@ -64,7 +64,11 @@ class _StaffSetupScreenState extends ConsumerState<StaffSetupScreen> {
         title: "Are you sure?",
         description: "selected user will be removed from staff!",
         onConfirm: () async {
-          await resetStaffRole(uid: doc["uid"]);
+
+          var dio = Dio();
+          await dio.post(Constants.baseUrl + Constants.deleteUserUrl, data: {
+            "email": doc["email"],
+          });
           _getStaffUsers();
         },
       );
@@ -95,7 +99,7 @@ class _StaffSetupScreenState extends ConsumerState<StaffSetupScreen> {
       body: ListView(
         children: [
           const SizedBox(height: 20),
-          customAppBar(context: context, title: "staff settings"),
+          customAppBar(context: context, title: "Staff settings"),
           const SizedBox(height: 20),
           const SizedBox(height: 8),
           if (_loading) ...[
