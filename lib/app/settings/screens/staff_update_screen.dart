@@ -77,7 +77,7 @@ class _StaffUpdateScreenState extends ConsumerState<StaffUpdateScreen> {
       showAlertDialog(
         context: context,
         title: "Done ✅",
-        description: "User's role updated",
+        description: "User's profile updated",
       );
 
 
