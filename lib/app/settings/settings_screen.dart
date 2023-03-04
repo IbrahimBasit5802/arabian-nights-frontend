@@ -20,6 +20,7 @@ import 'package:arabian_nights_frontend/config/app.dart';
 import 'package:arabian_nights_frontend/config/theme.dart';
 import 'package:arabian_nights_frontend/constants/roles.dart';
 import 'package:arabian_nights_frontend/providers/user_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({Key? key}) : super(key: key);
@@ -169,7 +170,8 @@ class SettingsScreen extends ConsumerWidget {
                   try {
                     final NavigatorState navigatorState = Navigator.of(context);
 
-                    await logOut();
+                    final prefs = await SharedPreferences.getInstance();
+                    prefs.setString("token", "");
 
                     // remove all screen and push login screen
                     navigatorState.pushAndRemoveUntil(

@@ -63,15 +63,15 @@ class _StaffAddScreenState extends ConsumerState<StaffAddScreen> {
       }
       var dio = Dio();
       var response = await dio.get(Constants.baseUrl + Constants.getUserUrl, data: {
-        "email": _searchInputController.text,
+        "email": searchText
       });
 
       print(searchText);
-      if (response == null) {
+      if (response.data["success"] == false) {
         showAlertDialog(
           context: context,
-          title: "oops!",
-          description: "no user found!",
+          title: "Oops!",
+          description: "No user found!",
         );
         setState(() {
           _isBtnDisabled = false;
@@ -125,21 +125,36 @@ class _StaffAddScreenState extends ConsumerState<StaffAddScreen> {
     }
 
     try {
-      await updateStaffRole(uid: _uid, role: _dropdownUserRole);
+      var dio = Dio();
+      await dio.post(Constants.baseUrl + Constants.updateRoleUrl, data: {
+        "_id": _uid,
+        "userType": _dropdownUserRole
+      });
       showAlertDialog(
         context: context,
         title: "Done ✅",
         description: "User's role updated",
       );
 
-      List<QueryDocumentSnapshot>? res = await getStaffUsers();
+      var res = await dio.get(Constants.baseUrl + Constants.getAllUsersUrl);
+      List<dynamic> staff = [];
+      for (int i = 0; i < res.data["users"].length; i++) {
+        Map<String, dynamic> curr = {
+          "uid" : res.data["users"][i]["_id"],
+          "name" : res.data["users"][i]["name"],
+          "email" : res.data["users"][i]["email"],
+          "role" : res.data["users"][i]["userType"],
+          "phone" : res.data["users"][i]["phone"],
+        };
+        staff.add(curr);
+      }
       if (res != null) {
-        ref.read(staffUsersProvider.notifier).state = res;
+        ref.read(staffUsersProvider.notifier).state = staff;
       }
     } catch (e) {
       showAlertDialog(
         context: context,
-        title: "oops!",
+        title: "Oops!",
         description: e.toString(),
       );
     }
@@ -155,7 +170,7 @@ class _StaffAddScreenState extends ConsumerState<StaffAddScreen> {
       body: ListView(
         children: [
           const SizedBox(height: 20),
-          customAppBar(context: context, title: "add staff member"),
+          customAppBar(context: context, title: "Add staff member"),
           const SizedBox(height: 20),
           const SizedBox(height: 8),
           if (!_isSearched) ...[
@@ -192,8 +207,8 @@ class _StaffAddScreenState extends ConsumerState<StaffAddScreen> {
             items: const [
               DropdownMenuItem(
                   value: '', child: Text("Select field search by")),
-              DropdownMenuItem(value: 'name', child: Text("Using Name")),
-              DropdownMenuItem(value: 'email', child: Text("Using Email")),
+              DropdownMenuItem(value: 'Name', child: Text("Using Name")),
+              DropdownMenuItem(value: 'Email', child: Text("Using Email")),
               DropdownMenuItem(
                   value: 'phoneNumber', child: Text("Using Phone")),
             ],
@@ -226,7 +241,7 @@ class _StaffAddScreenState extends ConsumerState<StaffAddScreen> {
             enableSuggestions: true,
             decoration: const InputDecoration(
               border: InputBorder.none,
-              hintText: "enter search value here...",
+              hintText: "Enter search value here...",
             ),
             onEditingComplete: () {
               _btnSearchUserTap();
@@ -238,7 +253,7 @@ class _StaffAddScreenState extends ConsumerState<StaffAddScreen> {
           margin: const EdgeInsets.symmetric(horizontal: 30),
           child: ElevatedButton(
             onPressed: _isBtnDisabled ? null : _btnSearchUserTap,
-            child: const Text("search"),
+            child: const Text("Search"),
           ),
         ),
         const SizedBox(height: 8),
@@ -358,7 +373,7 @@ class _StaffAddScreenState extends ConsumerState<StaffAddScreen> {
           margin: const EdgeInsets.symmetric(horizontal: 30),
           child: ElevatedButton(
             onPressed: _isBtnDisabled ? null : _btnAddStaffTap,
-            child: const Text("add"),
+            child: const Text("Add"),
           ),
         ),
       ],

@@ -18,9 +18,6 @@ void main() async {
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   FlutterNativeSplash.remove();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
   runApp(const MyApp());
 }
 
@@ -38,7 +35,7 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: appName,
           theme: theme,
-          home: const SplashScreen(),
+          home: const LoginScreen(),
           routes: {
             "/pos_home": (context) => const POSHomeScreen(),
           },
@@ -58,42 +55,9 @@ class SplashScreen extends ConsumerStatefulWidget {
 class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   void initState() {
-    Stream<User?> authStream = FirebaseAuth.instance.authStateChanges();
 
-    authStream.listen((user) async {
-      FlutterNativeSplash.remove();
-      if (user != null) {
-        Map<String, dynamic>? userData = await getUserInfo();
-        if (userData != null) {
-          UserModel userModel = UserModel(
-            name: userData["name"] ?? "",
-            email: userData["email"] ?? "",
-            phoneNumber: userData["phoneNumber"] ?? "",
-            role: userData["role"] ?? "",
-          );
-          ref.read(userProvider.notifier).state = userModel;
 
-          if (userModel.role != "" && userModel.role != "user") {
-            if (!mounted) return;
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const POSHomeScreen(),
-              ),
-              (route) => false,
-            );
-          } else {
-            if (!mounted) return;
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const AccountCreatedScreen(),
-              ),
-              (route) => false,
-            );
-          }
-        }
-      } else {
+
         FlutterNativeSplash.remove();
         Navigator.pushReplacement(
           context,
@@ -101,8 +65,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
             builder: (context) => const LoginScreen(),
           ),
         );
-      }
-    });
+
 
     super.initState();
   }
@@ -115,8 +78,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       body: Container(
         decoration: const BoxDecoration(
             image: DecorationImage(
-          image: AssetImage("assets/images/splash_screen/splash_screen_bg.png"),
-        )),
+              image: AssetImage("assets/images/splash_screen/splash_screen_bg.png"),
+            )),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

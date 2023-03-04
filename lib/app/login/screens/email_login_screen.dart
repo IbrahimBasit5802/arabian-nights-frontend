@@ -8,6 +8,7 @@ import 'package:arabian_nights_frontend/app/login/screens/email_signup_screen.da
 import 'package:arabian_nights_frontend/app/pos/screens/pos_homescreen.dart';
 import 'package:arabian_nights_frontend/providers/user_provider.dart';
 import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../constants.dart';
 import 'account_created_successfully_screen.dart';
 
@@ -35,7 +36,7 @@ class _EmailLoginScreenState extends ConsumerState<EmailLoginScreen> {
     if (email.isEmpty || password.isEmpty) {
       showAlertDialog(
         context: context,
-        title: "oops!",
+        title: "Oops!",
         description: "Please provide all details.",
       );
       setState(() {
@@ -61,7 +62,7 @@ class _EmailLoginScreenState extends ConsumerState<EmailLoginScreen> {
 
       showAlertDialog(
         context: context,
-        title: "oops!",
+        title: "Oops!",
         description: message,
       );
       setState(() {
@@ -79,6 +80,8 @@ class _EmailLoginScreenState extends ConsumerState<EmailLoginScreen> {
               "Authorization": "Bearer $token",
             })
         );
+        final prefs = await SharedPreferences.getInstance();
+        prefs.setString('token', token);
       } catch(e) {
         print(e);
       }

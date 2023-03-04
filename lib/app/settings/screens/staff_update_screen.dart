@@ -54,7 +54,7 @@ class _StaffUpdateScreenState extends ConsumerState<StaffUpdateScreen> {
     if (_dropdownUserRole.isEmpty) {
       showAlertDialog(
         context: context,
-        title: "oops!",
+        title: "Oops!",
         description: "Please Select role",
       );
       setState(() {
@@ -71,7 +71,7 @@ class _StaffUpdateScreenState extends ConsumerState<StaffUpdateScreen> {
           "name": _nameTextController.text,
           "email": _emailTextController.text,
           "phone": _phoneNumberController.text,
-          "userType": _dropdownUserRole,
+          "role": _dropdownUserRole,
       });
 
       showAlertDialog(
@@ -115,7 +115,7 @@ class _StaffUpdateScreenState extends ConsumerState<StaffUpdateScreen> {
       body: ListView(
         children: [
           const SizedBox(height: 20),
-          customAppBar(context: context, title: "update staff member"),
+          customAppBar(context: context, title: "Update staff member"),
           const SizedBox(height: 20),
           const SizedBox(height: 8),
           _staffUserUpdateForm(),
@@ -252,7 +252,7 @@ class _StaffUpdateScreenState extends ConsumerState<StaffUpdateScreen> {
           margin: const EdgeInsets.symmetric(horizontal: 30),
           child: ElevatedButton(
             onPressed: _isBtnDisabled ? null : _btnUpdateStaffUserTap,
-            child: const Text("update"),
+            child: const Text("Update"),
           ),
         ),
       ],
