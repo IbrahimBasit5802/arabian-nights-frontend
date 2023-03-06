@@ -134,12 +134,12 @@ class SettingsScreen extends ConsumerWidget {
                 userModel.role == UserRoles.recieptionist.name) ...[
               SettingListTile(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ViewAllInvoiceScreen(),
-                    ),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => const ViewAllInvoiceScreen(),
+                  //   ),
+                  // );
                 },
                 title: "All Invoices",
                 iconBackground: const Color(0xFFEFA856),

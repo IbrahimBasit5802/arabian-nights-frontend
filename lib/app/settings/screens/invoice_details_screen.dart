@@ -40,26 +40,25 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
       _loading = true;
     });
     try {
-      DocumentSnapshot<InvoiceDetailsModel> invoiceSnap =
+      Map<String, dynamic> invoiceDetails =
           await getRestroInvoiceDetails();
-      if (invoiceSnap.exists) {
-        InvoiceDetailsModel? invoiceDetails = invoiceSnap.data();
+
         if (invoiceDetails != null) {
-          _restaurantNameController.text = invoiceDetails.restaurantName ?? "";
-          _addressController.text = invoiceDetails.address ?? "";
-          _emailController.text = invoiceDetails.email ?? "";
-          _phoneController.text = invoiceDetails.phone ?? "";
-          _taxRateController.text = invoiceDetails.taxRate != null
-              ? invoiceDetails.taxRate.toString()
+          _restaurantNameController.text = invoiceDetails["restaurantName"] ?? "";
+          _addressController.text = invoiceDetails["address"] ?? "";
+          _emailController.text = invoiceDetails["email"] ?? "";
+          _phoneController.text = invoiceDetails["phone"] ?? "";
+          _taxRateController.text = invoiceDetails["taxRate"] != null
+              ? invoiceDetails["taxRate"].toString()
               : "0";
-          _taxIdController.text = invoiceDetails.taxId ?? "";
+          _taxIdController.text = invoiceDetails["taxId"] ?? "";
           _companyRegisterNumberController.text =
-              invoiceDetails.companyRegisterNumber ?? "";
+              invoiceDetails["companyRegisterNumber"] ?? "";
           _foodLicenseNumberController.text =
-              invoiceDetails.foodLicenseNumber ?? "";
-          _extraDetailsController.text = invoiceDetails.extraDetails ?? "";
+              invoiceDetails["foodLicenseNumber"] ?? "";
+          _extraDetailsController.text = invoiceDetails["extraDetails"] ?? "";
         }
-      }
+
       setState(() {
         _loading = false;
       });
@@ -99,7 +98,7 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
       debugPrint(e.toString());
       showAlertDialog(
         context: context,
-        title: "oops!",
+        title: "Oops!",
         description: "Error occured while saving invoice details.",
       );
     }
@@ -113,7 +112,7 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
         child: ListView(
           children: [
             const SizedBox(height: 20),
-            customAppBar(context: context, title: "invoice details"),
+            customAppBar(context: context, title: "Invoice details"),
             const SizedBox(height: 20),
             const SizedBox(height: 8),
             if (_loading) ...[

@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:arabian_nights_frontend/app/pos/controllers/order_controller.dart';
 import 'package:arabian_nights_frontend/app/pos/models/order_item_model.dart';
@@ -5,6 +6,8 @@ import 'package:arabian_nights_frontend/app/settings/widgets/custom_app_bar.dart
 import 'package:arabian_nights_frontend/common/alert_dialog.dart';
 import 'package:arabian_nights_frontend/common/get_ordinal_number.dart';
 import 'package:arabian_nights_frontend/config/app.dart';
+
+import '../../../constants.dart';
 
 class OrderConfirmationScreen extends StatefulWidget {
   final num floor;
@@ -163,21 +166,62 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
     String extraNotes = _extraNotesTextController.text;
     try {
       NavigatorState navigatorState = Navigator.of(context);
-      await orderItems(
-        floor: widget.floor,
-        table: widget.table,
-        extras: extraNotes,
-        items: orders,
-      );
+      var dio = Dio();
+      var check = await dio.get(Constants.baseUrl + Constants.checkOrderExistenceUrl, data: {
+        "floorNum": widget.floor,
+        "tableNum": widget.table,
+      });
 
-      navigatorState.pop();
-    } catch (e) {
+      if (check.data["success"] == true) {
+        // reset order items:
+        await dio.post(Constants.baseUrl + Constants.resetOrderItemsUrl, data: {
+          "floorNum": widget.floor,
+          "tableNum": widget.table,
+        });
+        // overwrite existing order
+        for (var item in orders) {
+          await dio.post(
+              Constants.baseUrl + Constants.addItemToOrderUrl, data: {
+            "floorNum": widget.floor,
+            "tableNum": widget.table,
+            "itemName": item.itemName,
+            "quantity": item.quantity,
+            "rate": item.rate,
+            "ready": item.ready,
+          });
+        }
+
+        navigatorState.pop();
+      }
+      else {
+        var res = await dio.post(
+            Constants.baseUrl + Constants.createOrderUrl, data: {
+          "floorNum": widget.floor,
+          "tableNum": widget.table,
+          "extras": extraNotes,
+        });
+        for (var item in orders) {
+          await dio.post(
+              Constants.baseUrl + Constants.addItemToOrderUrl, data: {
+            "floorNum": widget.floor,
+            "tableNum": widget.table,
+            "itemName": item.itemName,
+            "quantity": item.quantity,
+            "rate": item.rate,
+            "ready": item.ready,
+          });
+        }
+
+        navigatorState.pop();
+      }
+      } catch (e) {
       showAlertDialog(
         context: context,
-        title: "oops!",
+        title: "Oops!",
         description: e.toString(),
       );
     }
+
   }
 
   @override
@@ -189,13 +233,13 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
         },
         icon: const Icon(Icons.done),
         label: Text(
-            "confirm order: ${getOrdinalNumber(number: widget.floor.toInt(), short: true)}F-T${widget.table.toInt()}"),
+            "Confirm order: ${getOrdinalNumber(number: widget.floor.toInt(), short: true)}F-T${widget.table.toInt()}"),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: ListView(
         children: [
           const SizedBox(height: 20),
-          customAppBar(context: context, title: "order confirmation"),
+          customAppBar(context: context, title: "Order confirmation"),
           const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -245,7 +289,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
               maxLines: 5,
               decoration: const InputDecoration(
                 border: InputBorder.none,
-                hintText: "Write intructions here...",
+                hintText: "Write instructions here...",
               ),
             ),
           ),

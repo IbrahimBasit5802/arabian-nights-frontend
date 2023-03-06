@@ -27,7 +27,7 @@ class OrderBookingScreen extends ConsumerStatefulWidget {
 }
 
 class _OrderBookingScreenState extends ConsumerState<OrderBookingScreen> {
-  final List<MenuOrderItemModel> order = [];
+   List<MenuOrderItemModel> order = [];
 
   _addItemToOrder(int exsistingOrderItemIndex, dynamic menuItem) {
     if (exsistingOrderItemIndex != -1) {
@@ -85,10 +85,13 @@ class _OrderBookingScreenState extends ConsumerState<OrderBookingScreen> {
           ),
         ),
       );
+
+
+
     } else {
       showAlertDialog(
         context: context,
-        title: "oops!",
+        title: "Oops!",
         description: "There is no order!\nPlease order something to proceed.",
       );
     }
@@ -102,9 +105,10 @@ class _OrderBookingScreenState extends ConsumerState<OrderBookingScreen> {
       floatingActionButton: FloatingActionButton.extended(
         isExtended: order.isNotEmpty,
         icon: const Icon(Icons.restaurant_rounded),
-        label: const Text("order now"),
+        label: const Text("Order now"),
         onPressed: () {
           _orderNowBtnTap();
+
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -147,7 +151,6 @@ class _OrderBookingScreenState extends ConsumerState<OrderBookingScreen> {
 
 
           ...menu.map((menuCategory) {
-            print("ok");
             String categoryTitle = menuCategory["category"];
 
             List<dynamic> items = menuCategory["items"];

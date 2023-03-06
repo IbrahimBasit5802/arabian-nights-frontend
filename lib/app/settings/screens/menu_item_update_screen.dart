@@ -125,12 +125,17 @@ class _MenuItemAddScreenState extends ConsumerState<MenuItemUpdateScreen> {
 
           var dio = Dio();
 
-          await dio.post(Constants.baseUrl + Constants.updateItemUrl, data: {
-            "categoryName": widget.categoryId,
-            "name": itemName,
-            "price": itemPrice,
-            "picUrl": imageURL,
-            "oldName": widget.oldItemName,
+          await dio.post(Constants.baseUrl + Constants.updateItemPullUrl, data: {
+          "categoryName": widget.categoryId,
+          "oldName": widget.oldItemName,
+          });
+
+          await dio.post(Constants.baseUrl + Constants.updateItemPushUrl, data: {
+          "categoryName": widget.categoryId,
+          "name": itemName,
+          "price": itemPrice,
+          "picUrl": imageURL,
+
           });
           var menuResponse = await dio.get(Constants.baseUrl + Constants.getCategoriesUrl);
           List<dynamic> menu = [];
@@ -163,12 +168,17 @@ class _MenuItemAddScreenState extends ConsumerState<MenuItemUpdateScreen> {
           Navigator.pop(context);
         } else {
           var dio = Dio();
-          await dio.post(Constants.baseUrl + Constants.updateItemUrl, data: {
+          await dio.post(Constants.baseUrl + Constants.updateItemPullUrl, data: {
+            "categoryName": widget.categoryId,
+            "oldName": widget.oldItemName,
+          });
+
+          await dio.post(Constants.baseUrl + Constants.updateItemPushUrl, data: {
             "categoryName": widget.categoryId,
             "name": itemName,
             "price": itemPrice,
             "picUrl": imageURL,
-            "oldName": widget.oldItemName,
+
           });
           //  update state provider for menu
           var menuResponse = await dio.get(Constants.baseUrl + Constants.getCategoriesUrl);

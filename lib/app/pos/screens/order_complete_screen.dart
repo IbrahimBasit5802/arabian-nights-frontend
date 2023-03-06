@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -49,26 +48,29 @@ class _OrderCompleteScreenState extends ConsumerState<OrderCompleteScreen> {
 
   _getOrderInformation() async {
     try {
-      num taxRate = 0;
-      DocumentSnapshot<InvoiceDetailsModel> arabian_nights_frontendInvoiceDetails =
-          await getRestroInvoiceDetails();
-      if (arabian_nights_frontendInvoiceDetails.exists) {
-        InvoiceDetailsModel? invoiceDetails = arabian_nights_frontendInvoiceDetails.data();
-        if (invoiceDetails != null) {
-          taxRate = invoiceDetails.taxRate ?? 0;
-          setState(() {
-            _taxRate = invoiceDetails.taxRate ?? 0;
-            _invoiceDetails = invoiceDetails;
-          });
-        }
-      }
 
+      Map<String, dynamic> arabian_nights_frontendInvoiceDetails =
+          await getRestroInvoiceDetails();
+
+      _invoiceDetails = InvoiceDetailsModel(
+        address: arabian_nights_frontendInvoiceDetails["address"] ?? "",
+        email: arabian_nights_frontendInvoiceDetails["email"] ?? "",
+        restaurantName: arabian_nights_frontendInvoiceDetails["restaurantName"] ?? "",
+        taxRate: arabian_nights_frontendInvoiceDetails["taxRate"] ?? 0,
+        phone: arabian_nights_frontendInvoiceDetails["phone"] ?? "",
+        taxId: arabian_nights_frontendInvoiceDetails["taxId"] ?? "",
+        foodLicenseNumber: arabian_nights_frontendInvoiceDetails["foodLicenseNumber"] ?? "",
+        companyRegisterNumber: arabian_nights_frontendInvoiceDetails["companyRegisterNumber"] ?? "",
+        extraDetails: arabian_nights_frontendInvoiceDetails["extraDetails"] ?? "",
+      );
       // get orders
+      num taxRate = arabian_nights_frontendInvoiceDetails["taxRate"] ?? 0;
+      _taxRate = arabian_nights_frontendInvoiceDetails["taxRate"] ?? 0;
       Map<String, dynamic>? orderData =
           await getOrders(floor: widget.floor, table: widget.table);
 
       if (orderData != null) {
-        List<dynamic> orderedItems = orderData["ordered_items"] ?? [];
+        List<dynamic> orderedItems = orderData["items"] ?? [];
 
         num itemsTotal = 0;
         num itemsTotalTax = 0;
@@ -96,7 +98,7 @@ class _OrderCompleteScreenState extends ConsumerState<OrderCompleteScreen> {
       }
     } catch (e) {
       debugPrint("$e");
-      showAlertDialog(context: context, title: "oops", description: "$e");
+      //showAlertDialog(context: context, title: "Oops", description: "$e");
     }
     setState(() {
       _loading = false;
@@ -127,7 +129,7 @@ class _OrderCompleteScreenState extends ConsumerState<OrderCompleteScreen> {
           _loading = true;
         });
 
-        DocumentSnapshot? invoiceSnap = await completeOrder(
+        Map<String, dynamic>? invoiceData = await completeOrder(
           floor: widget.floor,
           table: widget.table,
           orderedItems: _orders,
@@ -137,34 +139,21 @@ class _OrderCompleteScreenState extends ConsumerState<OrderCompleteScreen> {
               : PaymentMethod.cash.name,
         );
 
-        if (invoiceSnap == null) {
-          showAlertDialog(
-            context: context,
-            title: "oops!",
-            description:
-                "invoice not found!, you can check in invoices screen.",
-          );
-          setState(() {
-            _loading = false;
-          });
-          return;
-        }
-
-        Map<String, dynamic>? invoiceData =
-            invoiceSnap.data() as Map<String, dynamic>?;
-
         if (invoiceData == null) {
           showAlertDialog(
             context: context,
-            title: "oops!",
+            title: "Oops!",
             description:
-                "invoice not found!, you can check in invoices screen.",
+                "Invoice not found!, you can check in invoices screen.",
           );
           setState(() {
             _loading = false;
           });
           return;
         }
+
+
+
 
         scaffoldMessengerState.clearSnackBars();
 
@@ -183,7 +172,7 @@ class _OrderCompleteScreenState extends ConsumerState<OrderCompleteScreen> {
         log("$e", name: "order_complete_screen.dart");
         showAlertDialog(
           context: context,
-          title: "oops!",
+          title: "Oops!",
           description: "Error occured while completing order.",
         );
         setState(() {
@@ -193,7 +182,7 @@ class _OrderCompleteScreenState extends ConsumerState<OrderCompleteScreen> {
     } else {
       showAlertDialog(
         context: context,
-        title: "oops!",
+        title: "Oops!",
         description:
             "arabian_nights_frontend Invoice details are missing.\nPlease add your arabian_nights_frontend's invoice details from settings.\nSo you can generate invoices.",
       );
@@ -208,7 +197,7 @@ class _OrderCompleteScreenState extends ConsumerState<OrderCompleteScreen> {
           ? null
           : FloatingActionButton.extended(
               onPressed: _loading ? null : _btnCompleteOrderTap,
-              label: const Text("complete order"),
+              label: const Text("Complete order"),
             ),
       body: ListView(
         children: [

@@ -19,9 +19,9 @@ class InvoiceViewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String uniqueInvoiceID = invoiceData["unique_invoice_id"] ?? "";
-    num table = invoiceData["table"] ?? 0;
-    num floor = invoiceData["floor"] ?? 0;
+    String uniqueInvoiceID = invoiceData["invoiceID"] ?? "";
+    num table = invoiceData["tableNum"] ?? 0;
+    num floor = invoiceData["floorNum"] ?? 0;
     String paymentMethod = invoiceData["payment_method"] ?? "";
     num taxRate = invoiceData["taxRate"] ?? 0;
 
@@ -29,9 +29,9 @@ class InvoiceViewScreen extends StatelessWidget {
     num itemsTotalTax = 0;
     num totalPayable = 0;
 
-    DateTime invoiceDate = invoiceData["date"].toDate() ?? DateTime.now();
+    String invoiceDate = invoiceData["dateOfOrder"] ?? "";
 
-    List<dynamic> orderedItems = invoiceData["ordered_items"] ?? [];
+    List<dynamic> orderedItems = invoiceData["orderedItems"] ?? [];
     // calculate total
     if (orderedItems.isNotEmpty) {
       for (var orderItem in orderedItems) {
@@ -70,7 +70,7 @@ class InvoiceViewScreen extends StatelessWidget {
                 },
                 format: PdfPageFormat.roll80,
                 name:
-                    "${arabian_nights_frontendInvoiceDetails.restaurantName ?? ''}-${invoiceDate.year}${invoiceDate.month}${invoiceDate.day}${invoiceDate.hour}${invoiceDate.minute}${invoiceDate.second}${invoiceDate.millisecond}",
+                    "${arabian_nights_frontendInvoiceDetails.restaurantName ?? ''}-${invoiceDate}",
               );
             },
             key: UniqueKey(),
@@ -93,7 +93,7 @@ class InvoiceViewScreen extends StatelessWidget {
                 arabian_nights_frontendInvoiceDetails: arabian_nights_frontendInvoiceDetails,
               );
               String fileName =
-                  "${arabian_nights_frontendInvoiceDetails.restaurantName ?? ''}-${invoiceDate.year}${invoiceDate.month}${invoiceDate.day}${invoiceDate.hour}${invoiceDate.minute}${invoiceDate.second}${invoiceDate.millisecond}.pdf";
+                  "${arabian_nights_frontendInvoiceDetails.restaurantName ?? ''}-${invoiceDate}.pdf";
 
               await Printing.sharePdf(
                 filename: fileName,
@@ -114,7 +114,7 @@ class InvoiceViewScreen extends StatelessWidget {
           const SizedBox(height: 20),
           customAppBar(
             context: context,
-            title: "invoice detail",
+            title: "Invoice detail",
           ),
           const SizedBox(height: 20),
           Container(

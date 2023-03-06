@@ -24,11 +24,24 @@ class Constants {
   static const deleteCategoryUrl = "/deletecategory";
   static const addNewItemUrl = "/addmenuitem";
   static const deleteItemUrl = "/deletemenuitem";
-  static const updateItemUrl = "/updatemenuitem";
+  static const updateItemPushUrl = "/updatemenuitempush";
+  static const updateItemPullUrl = "/updatemenuitempull";
   static const getAllUsersUrl = '/getallusers';
   static const getUserUrl = '/getuser';
   static const deleteUserUrl = '/deleteuser';
   static const updateUserUrl = '/updateuser';
   static const updateRoleUrl = '/updateusertype';
+  static const createOrderUrl = '/createorder';
+  static const addItemToOrderUrl = '/additemtoorder';
+  static const getAllOrders = '/getallorders';
+  static const getOrderUrl = '/getorder';
+  static const saveInvoiceDetailsUrl = '/saveinvoicedetails';
+  static const getInvoiceDetailsUrl = '/getinvoicedetails';
+  static const generateInvoiceUrl = '/generateinvoice';
+  static const deleteOrderUrl = '/deleteorder';
+  static const deleteItemFromOrderUrl = '/deleteitemfromorder';
+  static const checkOrderExistenceUrl = '/checkorderexistence';
+  static const overWriteOrderUrl = '/overwriteorder';
+  static const resetOrderItemsUrl = '/resetorderitems';
 
 }

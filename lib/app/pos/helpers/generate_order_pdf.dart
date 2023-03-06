@@ -8,7 +8,7 @@ import 'package:arabian_nights_frontend/config/app.dart';
 Future<Uint8List> generateOrderPdf({
   required String invoiceId,
   required String paymentMethod,
-  required DateTime date,
+  required String date,
   required num itemTotal,
   required num taxRate,
   required num totalTax,
@@ -76,7 +76,7 @@ Future<Uint8List> generateOrderPdf({
                       ),
                     ),
                     pw.Text(
-                      "Date: ${date.year}/${date.month}/${date.day} ${date.hour}:${date.minute}",
+                      "Date: $date",
                       style: pw.TextStyle(
                         fontFallback: [emoji],
                       ),

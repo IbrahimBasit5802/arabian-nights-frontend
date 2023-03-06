@@ -1,39 +1,53 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
-FirebaseFirestore _firestore = FirebaseFirestore.instance;
+import '../../../constants.dart';
+
 
 Future<void> saveRestroInvoiceDetails({
   required InvoiceDetailsModel invoiceDetails,
 }) async {
   try {
-    await _firestore
-        .collection("config")
-        .doc("invoice")
-        .withConverter(
-          fromFirestore: InvoiceDetailsModel.fromFirestore,
-          toFirestore: (InvoiceDetailsModel invoiceDetailsModel, options) =>
-              invoiceDetailsModel.toFirestore(),
-        )
-        .set(invoiceDetails, SetOptions(merge: true));
+    var dio = Dio();
+    await dio.post(Constants.baseUrl + Constants.saveInvoiceDetailsUrl,
+        data: {
+          "restaurantName": invoiceDetails.restaurantName,
+          "address": invoiceDetails.address,
+          "phone": invoiceDetails.phone,
+          "email": invoiceDetails.email,
+          "taxRate": invoiceDetails.taxRate,
+          "taxId": invoiceDetails.taxId,
+          "companyRegisterNumber": invoiceDetails.companyRegisterNumber,
+          "foodLicenseNumber": invoiceDetails.foodLicenseNumber,
+          "extraDetails": invoiceDetails.extraDetails,
+        });
   } catch (e) {
     debugPrint(e.toString());
     throw Exception("error saving invoice details.");
   }
 }
 
-Future<DocumentSnapshot<InvoiceDetailsModel>> getRestroInvoiceDetails() async {
-  DocumentSnapshot<InvoiceDetailsModel> invoiceDetailsSnap = await _firestore
-      .collection("config")
-      .doc("invoice")
-      .withConverter(
-        fromFirestore: InvoiceDetailsModel.fromFirestore,
-        toFirestore: (InvoiceDetailsModel invoiceDetailsModel, options) =>
-            invoiceDetailsModel.toFirestore(),
-      )
-      .get();
+Future<Map<String, dynamic>> getRestroInvoiceDetails() async {
 
-  return invoiceDetailsSnap;
+  Map<String, dynamic> invoiceDetailsData = {};
+  try {
+    var dio = Dio();
+    Response response = await dio.get(Constants.baseUrl + Constants.getInvoiceDetailsUrl);
+    invoiceDetailsData["restaurantName"] = response.data["invoice"]["restaurantName"];
+    invoiceDetailsData["address"] = response.data["invoice"]["address"];
+    invoiceDetailsData["phone"] = response.data["invoice"]["phone"];
+    invoiceDetailsData["email"] = response.data["invoice"]["email"];
+    invoiceDetailsData["taxRate"] = response.data["invoice"]["taxRate"];
+    invoiceDetailsData["taxId"] = response.data["invoice"]["taxId"];
+    invoiceDetailsData["companyRegisterNumber"] = response.data["invoice"]["companyRegisterNumber"];
+    invoiceDetailsData["foodLicenseNumber"] = response.data["invoice"]["foodLicenseNumber"];
+    invoiceDetailsData["extraDetails"] = response.data["invoice"]["extraDetails"];
+
+  } catch (e) {
+    debugPrint(e.toString());
+    throw Exception("Error getting invoice details.");
+  }
+  return invoiceDetailsData;
 }
 
 class InvoiceDetailsModel {
@@ -59,36 +73,5 @@ class InvoiceDetailsModel {
     this.extraDetails,
   });
 
-  factory InvoiceDetailsModel.fromFirestore(
-    DocumentSnapshot<Map<String, dynamic>> snapshot,
-    SnapshotOptions? options,
-  ) {
-    final data = snapshot.data();
-    return InvoiceDetailsModel(
-      restaurantName: data?["restaurantName"],
-      address: data?["address"],
-      phone: data?["phone"],
-      email: data?["email"],
-      taxRate: data?["taxRate"],
-      taxId: data?["taxId"],
-      companyRegisterNumber: data?["companyRegisterNumber"],
-      foodLicenseNumber: data?["foodLicenseNumber"],
-      extraDetails: data?["extraDetails"],
-    );
-  }
 
-  Map<String, dynamic> toFirestore() {
-    return {
-      if (restaurantName != null) "restaurantName": restaurantName,
-      if (address != null) "address": address,
-      if (phone != null) "phone": phone,
-      if (email != null) "email": email,
-      if (taxRate != null) "taxRate": taxRate,
-      if (taxId != null) "taxId": taxId,
-      if (companyRegisterNumber != null)
-        "companyRegisterNumber": companyRegisterNumber,
-      if (foodLicenseNumber != null) "foodLicenseNumber": foodLicenseNumber,
-      if (extraDetails != null) "extraDetails": extraDetails,
-    };
-  }
 }
