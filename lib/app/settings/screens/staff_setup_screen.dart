@@ -136,7 +136,7 @@ class _StaffSetupScreenState extends ConsumerState<StaffSetupScreen> {
             ),
           );
         },
-        child: const Icon(Icons.add_rounded),
+        child: const Icon(Icons.person_search_rounded),
       ),
     );
   }

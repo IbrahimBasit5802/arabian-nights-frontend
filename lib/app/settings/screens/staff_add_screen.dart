@@ -170,7 +170,7 @@ class _StaffAddScreenState extends ConsumerState<StaffAddScreen> {
       body: ListView(
         children: [
           const SizedBox(height: 20),
-          customAppBar(context: context, title: "Add staff member"),
+          customAppBar(context: context, title: "Search Staff member"),
           const SizedBox(height: 20),
           const SizedBox(height: 8),
           if (!_isSearched) ...[
@@ -207,14 +207,13 @@ class _StaffAddScreenState extends ConsumerState<StaffAddScreen> {
             items: const [
               DropdownMenuItem(
                   value: '', child: Text("Select field search by")),
-              DropdownMenuItem(value: 'Name', child: Text("Using Name")),
+
               DropdownMenuItem(value: 'Email', child: Text("Using Email")),
-              DropdownMenuItem(
-                  value: 'phoneNumber', child: Text("Using Phone")),
+
             ],
             icon: const Icon(Icons.keyboard_arrow_down_rounded),
             isExpanded: true,
-            hint: const Text("Using Name/Email/Phone"),
+            hint: const Text("Using Email"),
             borderRadius: BorderRadius.circular(12),
             underline: Container(),
             onChanged: (String? selectedOption) {

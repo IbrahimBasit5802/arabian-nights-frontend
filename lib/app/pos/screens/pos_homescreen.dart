@@ -192,9 +192,9 @@ class _POSHomeScreenState extends ConsumerState<POSHomeScreen> {
       appBar: AppBar(
         toolbarHeight: 80,
         centerTitle: true,
-        title: Image.asset(
-          "assets/images/logo/logo.png",
-          height: 30,
+        title: Image(
+          image: const AssetImage("assets/images/logo/logo.png"),
+          width: size.width > 400 ? 300 : size.width * .8,
         ),
         leadingWidth: 150,
         leading: Padding(
