@@ -119,13 +119,14 @@ Future<Map<String, dynamic>> completeOrder({
 }) async {
   try {
     DateTime now = DateTime.now();
+    print(now.toString());
     String uniqueInvoiceID =
         "${getOrdinalNumber(number: floor.toInt(), short: true)}F-T$table-${now.year}${now.month}${now.day}${now.hour}${now.minute}${now.second}${now.millisecond}";
     var dio = Dio();
     var res = await dio.post(Constants.baseUrl + Constants.generateInvoiceUrl, data: {
       "floorNum": floor,
       "tableNum": table,
-      "dateOfOrder": DateTime.now().toString(),
+      "dateOfOrder": now.toString(),
       "orderedItems": orderedItems,
       "taxRate": taxRate,
       "payment_method": paymentMethod,
@@ -139,7 +140,7 @@ Future<Map<String, dynamic>> completeOrder({
     Map<String, dynamic> data = {};
     data["tableNum"] = table;
     data["floorNum"] = floor;
-    data["dateOfOrder"] = DateTime.now.toString();
+    data["dateOfOrder"] = now.toString();
     data["orderedItems"] = orderedItems;
     data["taxRate"] = taxRate;
     data["payment_method"] = paymentMethod;
@@ -149,6 +150,6 @@ Future<Map<String, dynamic>> completeOrder({
     return data;
   } catch (e) {
     log("$e");
-    throw Exception("error while completing order.");
+    throw Exception("Error while completing order.");
   }
 }

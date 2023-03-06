@@ -30,7 +30,7 @@ class InvoiceViewScreen extends StatelessWidget {
     num totalPayable = 0;
 
     String invoiceDate = invoiceData["dateOfOrder"] ?? "";
-
+    print(invoiceDate);
     List<dynamic> orderedItems = invoiceData["orderedItems"] ?? [];
     // calculate total
     if (orderedItems.isNotEmpty) {
@@ -70,7 +70,7 @@ class InvoiceViewScreen extends StatelessWidget {
                 },
                 format: PdfPageFormat.roll80,
                 name:
-                    "${arabian_nights_frontendInvoiceDetails.restaurantName ?? ''}-${invoiceDate}",
+                    arabian_nights_frontendInvoiceDetails.restaurantName! + invoiceDate,
               );
             },
             key: UniqueKey(),

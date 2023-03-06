@@ -346,18 +346,18 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_native_splash
-      sha256: e301ae206ff0fb09b67d3716009c6c28c2da57a0ad164827b178421bb9d601f7
+      sha256: af665ef80a213a9ed502845a3d7a61b9acca4100ee7e9f067a7440bc3acd6730
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.18"
+    version: "2.2.19"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
       name: flutter_plugin_android_lifecycle
-      sha256: "4bef634684b2c7f3468c77c766c831229af829a0cd2d4ee6c1b99558bd14e5d2"
+      sha256: c224ac897bed083dabf11f238dd11a239809b446740be0c2044608c50029ffdf
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.8"
+    version: "2.0.9"
   flutter_riverpod:
     dependency: "direct main"
     description:
@@ -412,10 +412,10 @@ packages:
     dependency: "direct main"
     description:
       name: google_sign_in
-      sha256: "71c5311a19a2406498028a54fcac81351827297fa8cf5abbf51b7e0fa1bc64f5"
+      sha256: "750d08ffb4cd469f13068d15844ffd1d60c7ac1ca3c815918ba4ce4af22a2ddb"
       url: "https://pub.dev"
     source: hosted
-    version: "6.0.1"
+    version: "6.0.2"
   google_sign_in_android:
     dependency: transitive
     description:
@@ -428,10 +428,10 @@ packages:
     dependency: transitive
     description:
       name: google_sign_in_ios
-      sha256: eca3433737cfe8b231127d43a3e6527e07d5f8e4a0c00ce593aaaf7bc92bb135
+      sha256: "2575ef0d06dbe6923cedf39766da8305d407bb891d9f4a59502c642719776c5c"
       url: "https://pub.dev"
     source: hosted
-    version: "5.5.2"
+    version: "5.6.0"
   google_sign_in_platform_interface:
     dependency: transitive
     description:
@@ -452,10 +452,10 @@ packages:
     dependency: transitive
     description:
       name: html
-      sha256: d9793e10dbe0e6c364f4c59bf3e01fb33a9b2a674bc7a1081693dba0614b6269
+      sha256: "79d498e6d6761925a34ee5ea8fa6dfef38607781d2fa91e37523474282af55cb"
       url: "https://pub.dev"
     source: hosted
-    version: "0.15.1"
+    version: "0.15.2"
   http:
     dependency: transitive
     description:
@@ -516,10 +516,10 @@ packages:
     dependency: transitive
     description:
       name: image_picker_android
-      sha256: "845f793834d5d3af887ce39e3c97186996928cd43c8350a23e5499268398cc16"
+      sha256: ca14b663fecbe7f5ddda83782abfb2e1dd2a23d6da49b6ed344bf8cf3871225a
       url: "https://pub.dev"
     source: hosted
-    version: "0.8.5+8"
+    version: "0.8.5+9"
   image_picker_for_web:
     dependency: transitive
     description:
@@ -1057,26 +1057,26 @@ packages:
     dependency: transitive
     description:
       name: vector_graphics
-      sha256: "254348b40251c995cf8301ac715486c8cfa0a93b7fdc4dbd495a30f04db1fb44"
+      sha256: e43c38822e7d2facd790fd617ce16b10cc359a4b094d5772e3198904270918ef
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.0"
+    version: "1.1.1"
   vector_graphics_codec:
     dependency: transitive
     description:
       name: vector_graphics_codec
-      sha256: "143c290b762646c696c63be5d976bde7379ea892cb6868ddc5a17cbc56e71411"
+      sha256: "4a85a8563405bfe223052a85d6f8bc276ba3a22e12acfa3fd9a7108c67b32076"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.0"
+    version: "1.1.1"
   vector_graphics_compiler:
     dependency: transitive
     description:
       name: vector_graphics_compiler
-      sha256: "3190cc26d9ebda686bafb9721bb6a74c6d358700f4fc978a0f2cba6912daff86"
+      sha256: "9e8066d2f18e88f2fb1cf6c8ca567417bdfb0145ac28519dcca3c15d42a10b3e"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.0"
+    version: "1.1.1"
   vector_math:
     dependency: transitive
     description:
