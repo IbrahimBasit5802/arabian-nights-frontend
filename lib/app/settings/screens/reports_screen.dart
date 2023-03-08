@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:arabian_nights_frontend/app/settings/controllers/all_invoices_controller.dart';
 import 'package:arabian_nights_frontend/config/app.dart';
 import 'package:arabian_nights_frontend/packages/shimmer.dart';
+import 'package:intl/intl.dart';
 
 class ReportsScreen extends StatefulWidget {
   const ReportsScreen({super.key});
@@ -13,12 +14,12 @@ class ReportsScreen extends StatefulWidget {
 
 class _ReportsScreenState extends State<ReportsScreen> {
   DateTime? _date;
-  final List<QueryDocumentSnapshot> _invoices = [];
+  final List<dynamic> _invoices = [];
   bool _isLoading = false;
 
   // report data
   int _totalInvoicesGenerated = 0;
-  int _totalItemsSold = 0;
+  num _totalItemsSold = 0;
   num _totalSaleAmount = 0;
   // report data
 
@@ -34,39 +35,31 @@ class _ReportsScreenState extends State<ReportsScreen> {
       setState(() {
         _isLoading = true;
       });
+
+
       // date
       DateTime startDate =
           DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
+
+      var formatter = new DateFormat('yyyy-MM-dd');
+      String formattedDate = formatter.format(startDate);
       DateTime endDate = DateTime(
           selectedDate.year, selectedDate.month, selectedDate.day, 23, 59, 59);
 
       DateTimeRange dateRange = DateTimeRange(start: startDate, end: endDate);
 
-      List<QueryDocumentSnapshot> invoices =
-          await getInvoices(limit: 1000, dateRange: dateRange);
+
+      List<dynamic> invoices =
+          await getInvoices(limit: 1000, startDate: formattedDate);
 
       int totalInvoices = invoices.length;
-      int totalItemsSold = 0;
+      num totalItemsSold = 0;
       num totalSaleAmount = 0;
 
-      for (var invoice in invoices) {
-        Map<String, dynamic>? data = invoice.data() as Map<String, dynamic>?;
-        if (data != null) {
-          List<dynamic> items = data["ordered_items"] ?? [];
-          num invoiceTotal = 0;
-          int invoiceItems = items.length;
-          totalItemsSold += invoiceItems;
-          if (items.isNotEmpty) {
-            for (var item in items) {
-              num quantity = item["quantity"] ?? 0;
-              num rate = item["rate"] ?? 0;
-
-              num itemTotal = quantity * rate;
-              invoiceTotal += itemTotal;
-            }
-
-            totalSaleAmount += invoiceTotal;
-          }
+      for(var invoice in invoices) {
+        totalItemsSold += invoice["orderedItems"].length;
+        for (var item in invoice["orderedItems"]) {
+          totalSaleAmount += item["rate"] * item["quantity"];
         }
       }
 

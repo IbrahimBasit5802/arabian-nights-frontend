@@ -43,5 +43,6 @@ class Constants {
   static const checkOrderExistenceUrl = '/checkorderexistence';
   static const overWriteOrderUrl = '/overwriteorder';
   static const resetOrderItemsUrl = '/resetorderitems';
+  static const getInvoiceByDateUrl = '/getinvoicesbydate';
 
 }
