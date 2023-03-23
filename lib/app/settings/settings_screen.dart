@@ -146,14 +146,7 @@ class SettingsScreen extends ConsumerWidget {
                 icon: Icons.receipt_outlined,
               ),
             ],
-            SettingListTile(
-              onTap: () {
-                openURL(supportURL);
-              },
-              title: "Contact Support",
-              iconBackground: const Color(0xFF43BE56),
-              icon: Icons.message,
-            ),
+
             const SizedBox(height: 30),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
