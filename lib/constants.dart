@@ -10,7 +10,7 @@ class Constants {
   static const Color redDark = Color(0xfff44336);
   static const Color blueLight = Color(0xff0293ee);
   static const Color greenLight = Color(0xff13d38e);
-  static const baseUrl = "http://localhost:3000";
+  static const baseUrl = "https://arabian-nights-backend.onrender.com";
   static const authenticateUrl = "/authenticate";
   static const userInfoUrl = "/getinfo";
   static const signUpUrl = "/adduser";
